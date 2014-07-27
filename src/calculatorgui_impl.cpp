@@ -324,13 +324,13 @@ void FunDlg::OnToggle( wxCommandEvent& event ){
 
 Dlg::Dlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : DlgDef( parent, id, title, pos, size, style )
 {
-
+	/*
     MuParser.ClearConst();
-    MuParser.DefineConst("pi", 3.141592653589793238462643);
-    MuParser.DefineConst("e", 2.718281828459045235360287);
-    MuParser.DefineConst("dtr",0.0174532925199433) ;
+    MuParser.DefineConst(_T("pi"), 3.141592653589793238462643);
+    MuParser.DefineConst(_T("e"), 2.718281828459045235360287);
+    MuParser.DefineConst(_T("dtr"),0.0174532925199433) ;
     MuParser.SetVarFactory(AddVariable,&MuParser);
-
+	*/
     this->m_listCtrl->Show(false);
 
     this->m_Overview->Layout();
@@ -537,7 +537,7 @@ wxString Dlg::OnCalculate( void )
         printf("Input: %s\n",(const char*) Text.mb_str() );
         #endif // DEBUG
 
-        MuParser.SetExpr(static_cast<const char*>(Text.mb_str())); //Typecast to mu::stringtype
+        MuParser.SetExpr(Text.c_str()); //Typecast to mu::stringtype
         double Muparser_result=0;
         try
         {
@@ -545,7 +545,7 @@ wxString Dlg::OnCalculate( void )
             mystring=wxT("ans=")+double2wxT(Muparser_result);//set ans string (borrow the mystring);
             mystring.Replace(wxT(","),wxT("."),TRUE);
            // MuParser.SetExpr((mu::string_type) mystring.mb_str()); //This works in linux, but causes compiler error in windows
-            MuParser.SetExpr(static_cast<const char*>(mystring.mb_str())); //Store the answer in ans
+            MuParser.SetExpr(mystring.c_str()); //Store the answer in ans
             mystring=Report_Value(Muparser_result,m_iCalc_Reporting);//Format result as per setting.
             Muparser_result = MuParser.Eval();//Evaluate for ans
 
@@ -704,11 +704,11 @@ wxString Dlg::Report_Value(double in_Value, int in_mode){
             //printf("Humanise\n");
             try{
                 Temp_String=wxT("log10(abs(")+double2wxT(in_Value)+wxT("))/3");
-                MuParser.SetExpr(static_cast<const char*>(Temp_String.mb_str()));
+                MuParser.SetExpr(Temp_String.c_str());
                 human_magnitude=(int) MuParser.Eval();
                 if (in_Value<1) {human_magnitude--;}
                 Temp_String=double2wxT(in_Value)+wxT("*10^(-3*")+double2wxT((double)human_magnitude)+wxT(")");
-                MuParser.SetExpr(static_cast<const char*>(Temp_String.mb_str()));
+                MuParser.SetExpr(Temp_String.c_str());
                 result=MuParser.Eval();
                 if (in_Value==0) {human_magnitude=0;}
                 switch(human_magnitude){
